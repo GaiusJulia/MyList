@@ -32,25 +32,27 @@ void List::insert(int position, int value)
 
 void List::clear()
 {
-	if ((first == nullptr) && (last == nullptr))
+	if (size_l == 0)
 	{
-		std::cout << "Error in clear(): list is empty!" << std::endl;
+		std::cout << "Error: list is empty!" << std::endl;
 	}
 	else if (first == last)
 	{
 		delete first;
+		first = nullptr;
+		last = nullptr;
 		size_l = 0;
 	}
 	else
 	{
-		while (first->next != last)
+		while (first != nullptr)
 		{
 			Node* tmp_node = first->next;
 			delete first;
 			first = tmp_node;
 		}
-		delete first;
-		delete last;
+		last = nullptr;
+		first = nullptr;
 		size_l = 0;
 	}
 	
@@ -77,13 +79,15 @@ void List::push_back(int value)
 
 void List::pop_back()
 {
-	if ((first == 0) && (last == 0))
+	if (size_l == 0)
 	{
-		std::cout << "Error in pop_back(): list is empty!" << std::endl;
+		std::cout << "Error: list is empty!" << std::endl;
 	}
 	else if (first == last)
 	{
 		delete first;
+		first = nullptr;
+		last = nullptr;
 		size_l = 0;
 	}
 	else
@@ -116,13 +120,15 @@ void List::push_front(int value)
 
 void List::pop_front()
 {
-	if ((first == 0) && (last == 0))
+	if (size_l == 0)
 	{
-		std::cout << "Error in pop_front(): list is empty!" << std::endl;
+		std::cout << "Error: list is empty!" << std::endl;
 	}
 	else if (first == last)
 	{
 		delete first;
+		first = nullptr;
+		last = nullptr;
 		size_l = 0;
 	}
 	else
@@ -164,14 +170,34 @@ void List::erase(int position)
 	Node* cur_node = first;
 	while (cur_node != nullptr)
 	{
-
+		if (pos == position)
+		{
+			if (cur_node == first)
+			{
+				pop_front();
+			}
+			else if (cur_node == last)
+			{
+				pop_back();
+			}
+			else
+			{
+				cur_node->prev->next = cur_node->next;
+				cur_node->next->prev = cur_node->prev;
+				delete cur_node;
+				size_l -= 1;
+			}
+			return;
+		}
+		cur_node = cur_node->next;
+		pos++;
 	}
-	std::cout << "Error in erase(): out of range!" << std::endl;
+	std::cout << "Error: out of range!" << std::endl;
 }
 
 int List::size()
 {
-	return 0;
+	return size_l;
 }
 
 int List::operator[] (const int index)
@@ -192,14 +218,7 @@ int List::operator[] (const int index)
 
 bool List::is_empty()
 {
+	if (size_l == 0)
+		return true;
 	return false;
-}
-int List::operator= (List input_list)
-{
-	return 0;
-}
-
-void List::sort()
-{
-
 }
